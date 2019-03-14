@@ -1,0 +1,44 @@
+﻿<local:BasePage x:TypeArguments="core:LoginViewModel" x:Class="EEHive.Word.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:EEHive.Word"
+      xmlns:core="clr-namespace:EEHive.Word.Core;assembly=EEHive.Core"
+      mc:Ignorable="d" 
+      x:Name="Page"
+      d:DesignHeight="700" d:DesignWidth="700"
+      Title="MainPage">
+
+    <!-- Delete from here -->
+    <!-- White Background Graphs -->
+    <Border Grid.Column="1" Background="{StaticResource ForegroundLightBrush}" 
+                            CornerRadius="10 10 0 0"
+                            Padding="15 15 15 15"
+                            Margin="20,20,20,0">
+        
+
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Weight graph -->
+                <TextBlock Text="Weight" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="10 0 0 10"/>
+                <local:WeightControl Height="300" Width="Auto" Margin="10 0 10 0"/>
+                <!-- Activity graph -->
+                <TextBlock Text="Activity" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
+                <local:ActivityControl Height="300" Margin="10 0 10 0"/>
+                <!-- Hive Temperature graph -->
+                <TextBlock Text="Hive Temperature" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
+                <local:HiveTemperatureControl Height="300" Margin="10 0 10 0"/>
+                <!-- Exterior Temperature graph -->
+                <TextBlock Text="Exterior Temperature" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
+                <local:ExteriorTemperatureControl Height="300" Margin="10 0 10 0" />
+                <!-- Humidity Graph -->
+                <TextBlock Text="Humidity" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
+                <local:HumidityControl Height="300" Margin="10 0 10 0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+    <!-- To here -->
+
+</local:BasePage>
