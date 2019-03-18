@@ -36,7 +36,7 @@
                             </lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis LabelFormatter="{Binding DateTimeFormatteExteriorTemperature}" 
+                            <lvc:Axis LabelFormatter="{Binding DateTimeFormatterExteriorTemperature}" 
                           MaxValue="{Binding AxisMax}" 
                           MinValue="{Binding AxisMin}"
                           Unit="{Binding AxisUnit}">

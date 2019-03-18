@@ -1,7 +1,12 @@
-﻿using System;
+﻿using FireSharp.Config;
+using FireSharp.Response;
+using FireSharp.Interfaces;
+using System.Data;
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using LiveCharts;
 using LiveCharts.Configurations;
@@ -18,11 +23,24 @@ namespace EEHive.Word
     {
         private double _axisMax;
         private double _axisMin;
-        private double _trend;
+
+        /// <summary>
+        /// Linking program to FIREBASE project
+        /// </summary>
+        IFirebaseConfig config = new FirebaseConfig
+        {
+            AuthSecret = "tkNtmJt1F8agsqnieiILiTh5FCgBkiMeVQoQXX3Q",
+            BasePath = "https://bee-hive-database.firebaseio.com/"
+        };
+
+        IFirebaseClient client;
 
         public HumidityControl()
         {
             InitializeComponent();
+
+            //Creating FIRESHARP client
+            client = new FireSharp.FirebaseClient(config);
 
             //To handle live data easily, in this case we built a specialized type
             //the MeasureModel class, it only contains 2 properties
@@ -49,7 +67,7 @@ namespace EEHive.Word
             DateTimeFormatterHumidity = value => new DateTime((long)value).ToString("mm:ss");
 
             //AxisStep forces the distance between each separator in the X axis
-            AxisStep = TimeSpan.FromSeconds(4).Ticks;
+            AxisStep = TimeSpan.FromSeconds(40).Ticks;
             //AxisUnit forces lets the axis know that we are plotting seconds
             //this is not always necessary, but it can prevent wrong labeling
             AxisUnit = TimeSpan.TicksPerSecond;
@@ -58,9 +76,8 @@ namespace EEHive.Word
 
             //The next code simulates data changes every 300 ms
 
-            IsReading = true;
 
-            Task.Factory.StartNew(Read);
+            Task.Factory.StartNew(export);
 
             YFormatterHumidity = valueHumidity => valueHumidity + valueHumidity.ToString(" %");
 
@@ -91,37 +108,72 @@ namespace EEHive.Word
                 OnPropertyChanged("AxisMin");
             }
         }
-
-        public bool IsReading { get; set; }
-
-        private void Read()
+        public async void export()
         {
-            var r = new Random();
-
-            while (IsReading)
+            int i = 0;
+            while (true)
             {
-                Thread.Sleep(2000);
-                var now = DateTime.Now;
+                Thread.Sleep(1000);
 
-                _trend = r.Next(40, 60);
 
-                ChartValuesHumidity.Add(new MeasureModelHumidity
+                FirebaseResponse resp1 = await client.GetTaskAsync("Counter/Node");
+                CounterClass obj1 = resp1.ResultAs<CounterClass>();
+                int cnt = Convert.ToInt32(obj1.cnt);
+
+                while (true)
                 {
-                    DateTimeHumidity = now,
-                    ValueHumidity = _trend
-                });
+                    if (i == cnt)
+                    {
+                        break;
+                    }
+                    i++;
+                    try
+                    {
+                        FirebaseResponse resp2 = await client.GetTaskAsync("Data/" + i);
+                        if (resp2 != null)
+                        {
+                            Data obj2 = resp2.ResultAs<Data>();
 
-                SetAxisLimits(now);
+                            double Weight = getweight(obj2.DataPackage);
+                            ChartValuesHumidity.Add(new MeasureModelHumidity
+                            {
+                                DateTimeHumidity = System.DateTime.Now.AddSeconds(5 * i - 5 * cnt),
+                                ValueHumidity = Weight
+                            });
+                            //Move axis right limit to current time
+                            SetAxisLimits(DateTime.Now);
+                            if (ChartValuesHumidity.Count > 1500) ChartValuesHumidity.RemoveAt(0);
+                        }
 
-                //lets only use the last 150 values
-                if (ChartValuesHumidity.Count > 150) ChartValuesHumidity.RemoveAt(0);
+                    }
+                    catch
+                    {
+
+                    }
+                }
             }
         }
 
+        /// <summary>
+        /// Converts the portion of strin grelated to Weight to a double
+        /// </summary>
+        /// <param name="datastring"></param>
+
+        private double getweight(string datastring)
+        {
+            string WeightString = null;
+            double WeightDouble;
+            for (int i = 3; i < 6; i++)
+            {
+                WeightString += datastring[i];
+            }
+            WeightDouble = Convert.ToDouble(WeightString);
+            return WeightDouble / 10;
+        }
         private void SetAxisLimits(DateTime now)
         {
             AxisMax = now.Ticks + TimeSpan.FromSeconds(1).Ticks; // lets force the axis to be 1 second ahead
-            AxisMin = now.Ticks - TimeSpan.FromSeconds(20).Ticks; // and 20 seconds behind
+            AxisMin = now.Ticks - TimeSpan.FromSeconds(200).Ticks; // and 20 seconds behind
         }
 
         #region INotifyPropertyChanged implementation

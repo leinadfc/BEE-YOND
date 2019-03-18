@@ -21,6 +21,16 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel>
+                <!-- Last updated text-->
+                <TextBlock 
+                           Grid.Column="1" 
+                           FontFamily="{StaticResource LatoRegular}" 
+                           Foreground="{StaticResource ForegroundDarkBrush}" 
+                           FontSize="{StaticResource FontSizeSmall}" 
+                           HorizontalAlignment="Left" Margin="10 0 0 10"
+                           x:Name="LastUpdated"/>
+                <!-- Location Hyperlink-->
+                <local:Location  Margin="10 0 10 0"/>
                 <!-- Weight graph -->
                 <TextBlock Text="Weight" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="10 0 0 10"/>
                 <local:WeightControl Height="300" Width="Auto" Margin="10 0 10 0"/>
@@ -30,12 +40,6 @@
                 <!-- Hive Temperature graph -->
                 <TextBlock Text="Hive Temperature" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
                 <local:HiveTemperatureControl Height="300" Margin="10 0 10 0"/>
-                <!-- Exterior Temperature graph -->
-                <TextBlock Text="Exterior Temperature" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
-                <local:ExteriorTemperatureControl Height="300" Margin="10 0 10 0" />
-                <!-- Humidity Graph -->
-                <TextBlock Text="Humidity" Grid.Column="1" FontFamily="{StaticResource LatoRegular}" Foreground="{StaticResource ForegroundVeryDarkBrush}" FontSize="{StaticResource FontSizeAverage}" HorizontalAlignment="Center" Margin="0 30 0 10"/>
-                <local:HumidityControl Height="300" Margin="10 0 10 0" />
             </StackPanel>
         </ScrollViewer>
     </Border>

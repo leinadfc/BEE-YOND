@@ -72,7 +72,7 @@ namespace EEHive.Word
             DateTimeFormatter = value => new DateTime((long)value).ToString("mm:ss");
 
             //AxisStep forces the distance between each separator in the X axis. X AXIS GAP
-            AxisStep = TimeSpan.FromSeconds(40).Ticks;
+            AxisStep = TimeSpan.FromSeconds(10).Ticks;
             //AxisUnit forces lets the axis know that we are plotting seconds
             //this is not always necessary, but it can prevent wrong labeling
             AxisUnit = TimeSpan.TicksPerSecond;
@@ -121,44 +121,13 @@ namespace EEHive.Word
             }
         }
 
-        //  public bool IsReading { get; set; }
-
-        /*private void Read()
-        {
-            var r = new Random();
-
-            while (IsReading)
-            {
-                //Suspends the current thread for the specified amount of time
-                Thread.Sleep(2000);
-
-                var now = DateTime.Now;
-
-                //Random integer in the range of 40 and 60
-                _trend = r.Next(40,60);
-
-                ChartValues.Add(new MeasureModel
-                {
-                    DateTime = now,
-                    Value = _trend
-                });
-
-                //Move axis right limit to current time
-                SetAxisLimits(now);
-
-                //lets only use the last 150 values, deletes the value 151 all the time
-                if (ChartValues.Count > 1500) ChartValues.RemoveAt(0);
-            }
-        }*/
-
-        
 
         private void SetAxisLimits(DateTime now)
         {
             AxisMax = now.Ticks + TimeSpan.FromSeconds(1).Ticks; // lets force the axis to be 1 second ahead
             
             //This allows us to change timescale number of seconds we can have behind 
-            AxisMin = now.Ticks - TimeSpan.FromSeconds(200).Ticks; // and 20 seconds behind
+            AxisMin = now.Ticks - TimeSpan.FromSeconds(50).Ticks; // and 20 seconds behind
         }
 
         #region INotifyPropertyChanged implementation
@@ -185,6 +154,7 @@ namespace EEHive.Word
             while (true)
             {
                 Thread.Sleep(1000);
+                
 
                 FirebaseResponse resp1 = await client.GetTaskAsync("Counter/Node");
                 CounterClass obj1 = resp1.ResultAs<CounterClass>();
@@ -200,18 +170,21 @@ namespace EEHive.Word
                     try
                     {
                         FirebaseResponse resp2 = await client.GetTaskAsync("Data/" + i);
-                        Data obj2 = resp2.ResultAs<Data>();
-
-                        double Weight = getweight(obj2.DataPackage);
-                        ChartValues.Add(new MeasureModel
+                        if (resp2 != null)
                         {
-                            DateTime = System.DateTime.Now.AddSeconds(5*i-5*cnt),
-                            Value = Weight
-                        });
-                        //Move axis right limit to current time
-                        SetAxisLimits(DateTime.Now);
-                        if (ChartValues.Count > 1500) ChartValues.RemoveAt(0);
+                            Data obj2 = resp2.ResultAs<Data>();
 
+                            double Weight = getweight(obj2.DataPackage);
+                            ChartValues.Add(new MeasureModel
+                            {
+                                DateTime = System.DateTime.Now,
+                                Value = Weight
+                            });
+                            //Move axis right limit to current time
+                            SetAxisLimits(DateTime.Now);
+                            if (ChartValues.Count > 1500) ChartValues.RemoveAt(0);
+                        }
+                       
                     }
                     catch
                     {
@@ -230,12 +203,12 @@ namespace EEHive.Word
         {
             string WeightString = null;
             double WeightDouble;
-            for (int i = 0; i < 3; i++)
+            for (int i = 26; i < 31; i++)
             {
                 WeightString += datastring[i];
             }
             WeightDouble = Convert.ToDouble(WeightString);
-            return WeightDouble / 10;
+            return WeightDouble/1000;
         }
 
     }
