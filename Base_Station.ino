@@ -23,10 +23,10 @@ String Message_Upload;
 long int Last_Counter;
 
 //SET FIREBASE AND WIFI AUTHORIZATION DATA
-#define FIREBASE_HOST "bee-hive-database.firebaseio.com"
-#define FIREBASE_AUTH "tkNtmJt1F8agsqnieiILiTh5FCgBkiMeVQoQXX3Q"
-#define WIFI_SSID "iPhone_Joao"
-#define WIFI_PASSWORD "pisco1998"
+#define FIREBASE_HOST "Database_URL"
+#define FIREBASE_AUTH "SECRET_TOKEN"
+#define WIFI_SSID "WiFi_NAME"
+#define WIFI_PASSWORD "PASSWORD"
 
 
 void setup() {
@@ -64,9 +64,6 @@ void setup() {
 
   // uncomment if you want to enable PA/LNA external control
   //mrf.set_palna(true);
-
-  // uncomment if you want to buffer all PHY Payload
-  //mrf.set_bufferPHY(true);
 
   attachInterrupt(pin_interrupt, interrupt_routine, CHANGE); // interrupt 0 equivalent to pin 2(INT0) on ATmega8/168/328
   last_time = millis();
@@ -114,10 +111,6 @@ void handle_rx() {
     //UPLOAD FIREBASE
     Firebase.setString("Counter/Node/cnt", counter);
     Firebase.setString(URL_address, Message_Upload);
-
-
-  
-
 
     /*
     Serial.print("\r\nLQI/RSSI=");
